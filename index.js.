@@ -1,0 +1,27 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+// Mensaje de bienvenida para verificar que el servidor funciona
+app.get('/', (req, res) => {
+  res.send('Servidor de Agencia Perfumería Activo');
+});
+
+// Este es el código que conecta con WhatsApp/Meta
+app.get('/webhook', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+
+  // Aquí definimos una contraseña simple para seguridad
+  if (mode === 'subscribe' && token === 'PERFUME_2024') {
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Servidor listo');
+});
